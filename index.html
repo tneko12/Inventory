@@ -55,7 +55,7 @@
                         .catch(error => console.error(error));
                 },
                 foo() {
-                    fetch(url, {
+                    fetch('https://github.com/login/oauth/access_token', {
                         method: "POST", // *GET, POST, PUT, DELETE, etc.
                         headers: {
                             "Content-Type": "application/json; charset=utf-8",
