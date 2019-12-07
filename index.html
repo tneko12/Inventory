@@ -55,7 +55,9 @@
                         .catch(error => console.error(error));
                 },
                 foo() {
-                    fetch(`https://github.com/login/oauth/access_token?code=${this.code}&client_id=${this.client_id}&client_secret=${this.client_secret}`)
+                    fetch(`https://github.com/login/oauth/access_token?code=${this.code}&client_id=${this.client_id}&client_secret=${this.client_secret}`, {
+                            mode: 'cors'
+                        })
                         .then(response => response.json())
                         .then(data => {
                             console.log(data) // Prints result from `response.json()` in getRequest
