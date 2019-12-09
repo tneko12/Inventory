@@ -15,28 +15,77 @@
     <link rel="stylesheet" href="https://get.mavo.io/mavo.css"/>
 </head>
 <style type="text/css">
+    [property="eat"][mv-mode="edit"] {
+        background: yellow;
+    }
     .header, .body {
+        margin: 5px;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
     }
     .item {
-        width: 25%;
+        width: calc(100% / 7);
     }
 </style>
 <body>
     <div id="app" mv-app="inventory" mv-storage="https://github.com/tneko12/data">
         <h1>在庫管理システム</h1>
+        <h2>食品</h2>
         <div class="header">
             <div class="item">品名</div>
-            <div class="item">値段(税抜き)</div>
-            <div class="item">値段(税込み)</div>
+            <div class="item">税抜</div>
+            <div class="item">税込</div>
+            <div class="item">個数</div>
+            <div class="item">店</div>
             <div class="item">補足</div>
+            <div class="item">移動</div>
         </div>
-        <div class="body" property="items" mv-multiple>
-            <input class="item" property="title" type="text">
-            <input class="item" property="author" type="text">
-            <input class="item" property="details" type="text">
+        <div class="body" property="eat" mv-multiple>
+            <input class="item" property="name" type="text">
+            <input class="item" property="price" type="text" placeholder="0" value="[tax ? Math.floor(tax / 1.08) : 0]">
+            <input class="item" property="tax" type="text" placeholder="0" value="[price ? Math.floor(price * 1.08) : 0]">
+            <input class="item" property="store" type="text">
+            <input class="item" property="count" type="text">
             <input class="item" property="url" type="text">
+            <button mv-action="move(eat, ($index - 1))">上へ</button>
+        </div>
+        <h2>消耗品</h2>
+        <div class="header">
+            <div class="item">品名</div>
+            <div class="item">税抜</div>
+            <div class="item">税込</div>
+            <div class="item">個数</div>
+            <div class="item">店</div>
+            <div class="item">補足</div>
+            <div class="item">移動</div>
+        </div>
+        <div class="body" property="goods" mv-multiple>
+            <input class="item" property="name" type="text">
+            <input class="item" property="price" type="text" placeholder="0" value="[Math.floor(tax / 1.10)]">
+            <input class="item" property="tax" type="text" placeholder="0" value="[Math.floor(price * 1.10)]">
+            <input class="item" property="store" type="text">
+            <input class="item" property="count" type="text">
+            <input class="item" property="url" type="text">
+            <button mv-action="move(goods, ($index - 1))">上へ</button>
+        </div>
+        <h2>欲しいものリスト</h2>
+        <div class="header">
+            <div class="item">品名</div>
+            <div class="item">税抜</div>
+            <div class="item">税込</div>
+            <div class="item">個数</div>
+            <div class="item">店</div>
+            <div class="item">補足</div>
+            <div class="item">移動</div>
+        </div>
+        <div class="body" property="want" mv-multiple>
+            <input class="item" property="name" type="text">
+            <input class="item" property="price" type="text" placeholder="0" value="[Math.floor(tax / 1.10)]">
+            <input class="item" property="tax" type="text" placeholder="0" value="[Math.floor(price * 1.10)]">
+            <input class="item" property="store" type="text">
+            <input class="item" property="count" type="text">
+            <input class="item" property="url" type="text">
+            <button mv-action="move(want, ($index - 1))">上へ</button>
         </div>
     </div>
     <div class="footer">
@@ -57,6 +106,9 @@
                 url: null,
             },
             methods:{
+                onClick(event) {
+                    console.log(event);
+                },
             },
         });
 </script>
