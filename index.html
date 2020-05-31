@@ -80,7 +80,6 @@
 <body>
     <div id="app" mv-app="inventory" mv-storage="https://github.com/zaikokanri/data">
         <h1>在庫管理システム</h1>
-<<<<<<< HEAD
 
         <!-- 非ログイン -->
         <div class="mv-logged-out">
@@ -126,83 +125,6 @@
                         <button class="close" mv-action="set(detail, 0)">閉じる</button>
                     </div>
                 </div>
-=======
-        <div mv-mode="condition">
-            <h2>食品</h2>
-            <div class="header">
-                <div class="name">品名</div>
-                <div class="price">税抜</div>
-                <div class="tax">税込</div>
-                <div class="count">在庫</div>
-                <div class="manage"></div>
-                <div class="store">店</div>
-                <div class="move">移動</div>
-            </div>
-            <div class="body" property="eat" mv-multiple>
-                <input class="name" property="name" type="text">
-                <input class="price" property="price" type="text" placeholder="0">
-                <input class="tax" property="tax" type="text" placeholder="0" value="[price ? Math.floor(price * 1.08) : 0]">
-                <input class="count" property="count" type="text" value="[$index]">
-                <div class="manage">
-                    <button mv-action="set(count, count+1)">▲</button>
-                    <button mv-action="set(count, count-1)">▼</button>
-                </div>
-                <input class="store" property="store" type="text">
-                <div class="move">
-                    <button mv-action="move(eat, ($index - 1))">上</button>
-                    <button mv-action="move(eat, ($index + 1))">下</button>
-                </div>
-            </div>
-        </div>
-        <h2>消耗品</h2>
-        <div class="header">
-            <div class="name">品名</div>
-            <div class="price">税抜</div>
-            <div class="tax">税込</div>
-            <div class="count">在庫</div>
-            <div class="manage"></div>
-            <div class="store">店</div>
-            <div class="move">移動</div>
-        </div>
-        <div class="body" property="goods" mv-multiple>
-            <input class="name" property="name" type="text">
-            <input class="price" property="price" type="text" placeholder="0">
-            <input class="tax" property="tax" type="text" placeholder="0" value="[price ? Math.floor(price * 1.08) : 0]">
-            <input class="count" property="count" type="text" value="0">
-            <div class="manage">
-                <button mv-action="set(count, count+1)">▲</button>
-                <button mv-action="set(count, count-1)">▼</button>
-            </div>
-            <input class="store" property="store" type="text">
-            <div class="move">
-                <button mv-action="move(eat, ($index - 1))">上</button>
-                <button mv-action="move(eat, ($index + 1))">下</button>
-            </div>
-        </div>
-        <h2>欲しいものリスト</h2>
-        <div class="header">
-            <div class="name">品名</div>
-            <div class="price">税抜</div>
-            <div class="tax">税込</div>
-            <div class="count">在庫</div>
-            <div class="manage"></div>
-            <div class="store">店</div>
-            <div class="move">移動</div>
-        </div>
-        <div class="body" property="want" mv-multiple>
-            <input class="name" property="name" type="text">
-            <input class="price" property="price" type="text" placeholder="0">
-            <input class="tax" property="tax" type="text" placeholder="0" value="[price ? Math.floor(price * 1.08) : 0]">
-            <input class="count" property="count" type="text" value="0">
-            <div class="manage">
-                <button mv-action="set(count, count+1)">▲</button>
-                <button mv-action="set(count, count-1)">▼</button>
-            </div>
-            <input class="store" property="store" type="text">
-            <div class="move">
-                <button mv-action="move(eat, ($index - 1))">上</button>
-                <button mv-action="move(eat, ($index + 1))">下</button>
->>>>>>> ef11f27c2ddbff8a8081fd4b4ce0079b3ecb3d3a
             </div>
 
             <div mv-if="kind = '消耗品'">
