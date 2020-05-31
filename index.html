@@ -14,7 +14,7 @@
     <script>
     window.addEventListener('load', function() {
         if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register("/serviceWorker.js")
+        navigator.serviceWorker.register("/Inventory/serviceWorker.js")
             .then(function(registration) {
             console.log("serviceWorker registed.");
             }).catch(function(error) {
