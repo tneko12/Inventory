@@ -7,109 +7,187 @@
     <meta name="author" content="">
     <link rel="icon" type="image/png" href="favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- javascript -->
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="https://get.mavo.io/mavo.min.js"></script>
-    <!-- css -->
+    <link rel="manifest" href="/manifest.json" />
     <link rel="stylesheet" href="https://get.mavo.io/mavo.css"/>
+    <script src="https://get.mavo.io/mavo.min.js"></script>
 </head>
 <style type="text/css">
-    [property="eat"][mv-mode="edit"] {
-        background: yellow;
+    /* 消えてる間も表示 */
+    [mv-app] .mv-empty:not([mv-mode="edit"]):not(td):not(th) {
+        display: block;
     }
+
+    /* 編集中表示 */
+    [property="eat"][mv-mode="edit"],
+    [property="goods"][mv-mode="edit"],
+    [property="want"][mv-mode="edit"],
+    [property="buylist"][mv-mode="edit"] {
+        border: dotted 2px caution;
+    }
+
     .header, .body {
         margin: 5px;
         display: flex;
         justify-content: space-between;
+        align-items: center;
     }
-    .item {
-        width: calc(100% / 7);
+    .header > .item {
+        text-align: center;
+        font-size: 13px;
+    }
+    .body > .item {
+        box-sizing: border-box;
+        border: solid 1px #000;
+        height: 30px;
+        font-size: 13px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1px 2px;
+    }
+    .name { width: 22%; }
+    .price { width: 12%; }
+    .tax { width: 12%; }
+    .num { width: 10%; }
+    .count { width: 14%; }
+    .button { width: 15%; }
+
+    .buy { background-color: #fbc35e; }
+    .get { background-color: #9cff9c; }
+
+    .caution { background-color: #fbfb5e; }
+    .bad { background: #ffadad;}
+
+    .dialog {
+        position: fixed;
+        width: 90%;
+        height: 90%;
+        border: double 5px #034;
+        background-color: rgba(255,255,255 , 0.95);
+        z-index: 3;
+        top: 5%;
+        left: 5%;
+        box-sizing: border-box;
+        padding: 5px;
+    }
+    .close {
+        position: fixed;
+        bottom: 8%;
+        left: calc(50% - 50px);
+        width: 100px;
     }
 </style>
 <body>
     <div id="app" mv-app="inventory" mv-storage="https://github.com/tneko12/data">
         <h1>在庫管理システム</h1>
-        <h2>食品</h2>
-        <div class="header">
-            <div class="item">品名</div>
-            <div class="item">税抜</div>
-            <div class="item">税込</div>
-            <div class="item">個数</div>
-            <div class="item">店</div>
-            <div class="item">補足</div>
-            <div class="item">移動</div>
+
+        <!-- 非ログイン -->
+        <div class="mv-logged-out">
+            ログインしてください
         </div>
-        <div class="body" property="eat" mv-multiple>
-            <input class="item" property="name" type="text">
-            <input class="item" property="price" type="text" placeholder="0" value="[tax ? Math.floor(tax / 1.08) : 0]">
-            <input class="item" property="tax" type="text" placeholder="0" value="[price ? Math.floor(price * 1.08) : 0]">
-            <input class="item" property="store" type="text">
-            <input class="item" property="count" type="text">
-            <input class="item" property="url" type="text">
-            <button mv-action="move(eat, ($index - 1))">上へ</button>
-        </div>
-        <h2>消耗品</h2>
-        <div class="header">
-            <div class="item">品名</div>
-            <div class="item">税抜</div>
-            <div class="item">税込</div>
-            <div class="item">個数</div>
-            <div class="item">店</div>
-            <div class="item">補足</div>
-            <div class="item">移動</div>
-        </div>
-        <div class="body" property="goods" mv-multiple>
-            <input class="item" property="name" type="text">
-            <input class="item" property="price" type="text" placeholder="0" value="[Math.floor(tax / 1.10)]">
-            <input class="item" property="tax" type="text" placeholder="0" value="[Math.floor(price * 1.10)]">
-            <input class="item" property="store" type="text">
-            <input class="item" property="count" type="text">
-            <input class="item" property="url" type="text">
-            <button mv-action="move(goods, ($index - 1))">上へ</button>
-        </div>
-        <h2>欲しいものリスト</h2>
-        <div class="header">
-            <div class="item">品名</div>
-            <div class="item">税抜</div>
-            <div class="item">税込</div>
-            <div class="item">個数</div>
-            <div class="item">店</div>
-            <div class="item">補足</div>
-            <div class="item">移動</div>
-        </div>
-        <div class="body" property="want" mv-multiple>
-            <input class="item" property="name" type="text">
-            <input class="item" property="price" type="text" placeholder="0" value="[Math.floor(tax / 1.10)]">
-            <input class="item" property="tax" type="text" placeholder="0" value="[Math.floor(price * 1.10)]">
-            <input class="item" property="store" type="text">
-            <input class="item" property="count" type="text">
-            <input class="item" property="url" type="text">
-            <button mv-action="move(want, ($index - 1))">上へ</button>
-        </div>
-    </div>
-    <div class="footer">
-        <div class="row">
-            <div class="container">
-                <span>© 2019 @tneko12</span>
+
+        <!-- ログイン済み -->
+        <div class="mv-logged-in">
+            <div class="tab">
+                <button mv-action="set(kind, '食品')" >食品</button>
+                <button mv-action="set(kind, '消耗品')">消耗品</button>
+                <button mv-action="set(kind, '欲しいもの')">欲しいもの</button>
+                <button mv-action="set(kind, '買い物リスト')">買い物リスト</button>
             </div>
+            <h2 property="kind" mv-mode="read" mv-storage="local"></h2>
+            <div class="header" mv-if="kind != null">
+                <div class="name item">品名</div>
+                <div class="price item">税抜</div>
+                <div class="tax item">税込</div>
+                <div class="num item">単位</div>
+                <div class="count item">在庫数</div>
+                <div class="button item" mv-if="kind != '買い物リスト'">詳細</div>
+                <div class="button item" mv-if="kind != '買い物リスト'">買リスト</div>
+                <div class="button item" mv-if="kind = '買い物リスト'">状態</div>
+            </div>
+
+            <div mv-if="kind = '食品'">
+                <div property="eat" mv-multiple>
+                    <div class="body">
+                        <input class="name item" property="name" type="text" placeholder="品名"/>
+                        <input class="price item" property="price" type="number" placeholder="0" />
+                        <span class="tax item">[price ? Math.floor(price * 1.08) : 0]</span>
+                        <input class="num item" property="num" type="text" placeholder="単位"/>
+                        <input class="count item [if(count = 0, bad, if(count < 0.5, caution, good))]" property="count" type="number" placeholder="0"/>
+                        <button class="button item" property="detail" mv-action="set(detail, 1)">詳細</button>
+                        <button class="button item" mv-action="add($item, buylist)">追加</button>
+                    </div>
+                    <div class="dialog" mv-if="detail = 1">
+                        <h3>購入候補店舗</h3>
+                        <input class="store item" property="store" type="text" placeholder="店名"/>
+                        <h3>メモ</h3>
+                        <textarea name="memo" property="memo" id="" cols="30" rows="10"></textarea>
+                        <button class="close" mv-action="set(detail, 0)">閉じる</button>
+                    </div>
+                </div>
+            </div>
+
+            <div mv-if="kind = '消耗品'">
+                <div property="goods" mv-multiple>
+                    <div class="body">
+                        <input class="name item" property="name" type="text" placeholder="品名"/>
+                        <input class="price item" property="price" type="number" placeholder="0" />
+                        <span class="tax item">[price ? Math.floor(price * 1.08) : 0]</span>
+                        <input class="num item" property="num" type="text" placeholder="単位"/>
+                        <input class="count item [if(count = 0, bad, if(count < 0.5, caution, good))]" property="count" type="number" placeholder="0"/>
+                        <button class="button item" property="detail" mv-action="set(detail, 1)">詳細</button>
+                        <button class="button item" mv-action="add($item, buylist)">追加</button>
+                    </div>
+                    <div class="dialog" mv-if="detail = 1">
+                        <h3>購入候補店舗</h3>
+                        <input class="store item" property="store" type="text" placeholder="店名"/>
+                        <h3>メモ</h3>
+                        <textarea name="memo" property="memo" id="" cols="30" rows="10"></textarea>
+                        <h3>買い物リスト追加</h3>
+                        <button mv-action="add($item, buylist), set(detail, 0)">追加</button>
+                        <button class="close" mv-action="set(detail, 0)">閉じる</button>
+                    </div>
+                </div>
+            </div>
+
+            <div mv-if="kind = '欲しいもの'">
+                <div property="want" mv-multiple>
+                    <div class="body">
+                        <input class="name item" property="name" type="text" placeholder="品名"/>
+                        <input class="price item" property="price" type="number" placeholder="0" />
+                        <span class="tax item">[price ? Math.floor(price * 1.08) : 0]</span>
+                        <input class="num item" property="num" type="text" placeholder="単位"/>
+                        <input class="count item [if(count = 0, bad, if(count < 0.5, caution, good))]" property="count" type="number" placeholder="0"/>
+                        <button class="button item" property="detail" mv-action="set(detail, 1)">詳細</button>
+                        <button class="button item" mv-action="add($item, buylist)">追加</button>
+                    </div>
+                    <div class="dialog" mv-if="detail = 1">
+                        <h3>購入候補店舗</h3>
+                        <input class="store item" property="store" type="text" placeholder="店名"/>
+                        <h3>メモ</h3>
+                        <textarea name="memo" property="memo" id="" cols="30" rows="10"></textarea>
+                        <h3>買い物リスト追加</h3>
+                        <button mv-action="add($item, buylist), set(detail, 0)">追加</button>
+                        <button class="close" mv-action="set(detail, 0)">閉じる</button>
+                    </div>
+                </div>
+            </div>
+
+            <div mv-if="kind = '買い物リスト'">
+                <div property="buylist" mv-multiple>
+                    <div class="body">
+                        <span class="name item">[name]</span>
+                        <span class="price item">[price]</span>
+                        <span class="tax item">[price ? Math.floor(price * 1.08) : 0]</span>
+                        <span class="num item">[price]</span>
+                        <span class="count item [if(count = 0, bad, if(count < 0.5, caution, good))]">[count]</span>
+                        <button class="button item buy" property="buy" mv-if="buy = 0" mv-action="set(buy, 1)">購入</button>
+                        <button class="button item get" mv-if="buy = 1" mv-action="set(buy, 0)">済</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </body>
-<script>
-    var app = new Vue({
-            el: '#app',
-            data: {
-                title: null,
-                author: null,
-                details: null,
-                url: null,
-            },
-            methods:{
-                onClick(event) {
-                    console.log(event);
-                },
-            },
-        });
-</script>
 </html>
