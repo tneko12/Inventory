@@ -1,10 +1,12 @@
 {
   "name": "在庫管理システム",
+  "short_name": "在庫管理システム",
   "theme_color": "#2196f3",
   "background_color": "#2196f3",
   "display": "standalone",
+  "orientation": "portrait",
   "Scope": "/",
-  "start_url": "/",
+  "start_url": "/Inventory/",
   "icons": [
     {
       "src": "images/icons/icon-66x72.png",
